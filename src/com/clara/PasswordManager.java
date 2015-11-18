@@ -6,8 +6,8 @@ public class PasswordManager {
 
     static PasswordManager manager;
 
-    static PasswordDatabase database = new PasswordDatabase();
-    static PasswordGUI password = new PasswordGUI(manager);
+    static PasswordDatabase database;
+    static PasswordGUI password;
 
 
     public static void main(String[] args) {

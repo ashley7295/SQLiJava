@@ -1,14 +1,12 @@
 package com.clara;
 
 import javax.swing.*;
-import javax.swing.plaf.DimensionUIResource;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Created by we4954cp on 11/17/2015.
- */
+//TODO - close database and shut down program when close (X) button pressed in window
+
 public class PasswordGUI extends JFrame{
     private JTextField loginField;
     private JTextField passwordField;
@@ -25,6 +23,9 @@ public class PasswordGUI extends JFrame{
         pack();
         setMinimumSize(new Dimension(400, 200));
         setVisible(true);
+
+        //Make the login button the default one 'clicked' when enter pressed
+        rootPane.setDefaultButton(loginButton);
 
         loginButton.addActionListener(new ActionListener() {
             @Override

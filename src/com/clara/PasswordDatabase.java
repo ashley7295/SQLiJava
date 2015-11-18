@@ -31,7 +31,9 @@ public class PasswordDatabase {
 
         //    static final String DB_CONNECTION_URL = "jdbc:mysql://localhost:3306/test";
 
-        conn = DriverManager.getConnection(DB_CONNECTION_URL + DB_NAME, USER, PASS);
+        conn = DriverManager.getConnection(DB_CONNECTION_URL + DB_NAME + "?allowMultiQueries=true", USER, PASS);
+            //Note the allowMultiQueries=true parameter. This is needed to allow more than one query in an executeQuery statement
+            //Can be very useful... but also permits abuse.
 
         statement = conn.createStatement();
 
