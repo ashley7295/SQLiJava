@@ -12,7 +12,7 @@ use passwords;
 create table passwords (username varchar(30), login varchar(30), password varchar(30));
 
 insert into passwords values ('Abby Admin', 'admin', 'kittens');
-insert into passwords values ('Ben SysAdmin', 'bemn', 'octopus');
+insert into passwords values ('Ben SysAdmin', 'ben', 'octopus');
 insert into passwords values ('Carl ComputerTech', 'carl', 'mouse');
 insert into passwords values ('Deb Developer', 'deb', 'zebra');
 ```
