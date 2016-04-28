@@ -18,12 +18,15 @@ insert into passwords values ('Deb Developer', 'deb', 'zebra');
 ```
 
 
-Edit the database username and password in PasswordDatabase.java and run the code.
+Edit the database username and password in PasswordDatabase.java to appropriate values for your system, and then run the code.
 
 Try logging in with one of the valid passwords, and also try with an invalid password. You should see an appropriate success or failure message.
 
 OK, now try this for the login and password.
+
+```
 login = 'whatever' and password ' or '1'='1
+```
 Who are you logged in as?
 
 Now, try some of the other attacks from the .NET/SQLServer version of this - they should all work here.
