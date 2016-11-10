@@ -2,14 +2,14 @@
 
 Subtitle: how not to write a login screen
 
-To set up: start MySQL server running, then run the following commands in the console to create a users database, grant access to your database user, create a passwords table, and add some test data.
+To set up: start MySQL server running, then run the following commands in the console to create a users database, grant permission to your database user, create a passwords table, and add some test data.
 
 ```
 create database users;
 
 use users;
 
-grant select on users.* to 'yourDBuser'@'localhost';
+grant all on users.* to 'yourDBuser'@'localhost';
 
 create table passwords (username varchar(30), login varchar(30), password varchar(30));
 
@@ -24,11 +24,12 @@ Edit the database username and password in PasswordDatabase.java to appropriate 
 
 Try logging in with one of the valid passwords, and also try with an invalid password. You should see an appropriate success or failure message.
 
-OK, now try this for the login and password.
+OK, now enter anything for the username, and this for password. 
 
 ```
-login = 'whatever' and password ' or '1'='1
+whatever' or '1'='1
 ```
+
 Who are you logged in as?
 
 In addition to logging in as admin, there's more you can do with SQL injection.
@@ -65,16 +66,19 @@ And how about simply deleting the whole database? Enter anything for the usernam
 
 You'll see the Access Denied message, but if you try and log in with a valid account you'll see an error that the database table doesn't exist any more.
 
-This is just the tip of the iceberg of SQL injection. There are many more variations which can be used to discover your database table names, columns, and all of the data within. If you don't filter user input, a malicious user can potentially read all of your data and/or destroy your database. Think about databases of usernanmes and passwords, or credit card data, or names and social security numbers; for example LinkedIn (millions of username and passwords stolen) or the Heartland data breach (millions of credit cards stolen), and many more...
-
-SQL injection hall of shame (Code Curmudgeon): http://codecurmudgeon.com/wp/sql-injection-hall-of-shame/
+Try it out - can you do these things?
 
 * Can you create yourself a new account?
 * Can you delete someone else's account?
 * Can you change someone's password? 
-* Can you discover someone's password? 
+* Can you discover someone's password?
+* What if you program's database user has permissions to create other users. Could you create a new database user and grant that user permissions?
+
 
 Consider this could be a login form on a website that anyone could access. This is a huge problem. 
 
+And this is just the tip of the iceberg of SQL injection. There are many more variations which can be used to discover your database table names, columns, and all of the data within. If you don't filter user input, a malicious user can potentially read all of your data and/or destroy your database. Think about databases of usernanmes and passwords, or credit card data, or names and social security numbers; for example LinkedIn (millions of username and passwords stolen) or the Heartland data breach (millions of credit cards stolen), VTech, the Wall Street Journal, the TalkTalk ISP, many government organization, and many more...
 
+SQL injection hall of shame (Code Curmudgeon): http://codecurmudgeon.com/wp/sql-injection-hall-of-shame/
+ 
 OK, so how to fix? One very useful preventative measure is parameterized queries. Try replacing the SQL statement at PasswordDatabase's authenticateUser() method with a parameterized query, and then try the evil SQL again. It shouldn't work. This is why you should always user parameterized queries, and doubly always when user input is involved!
