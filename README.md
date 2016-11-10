@@ -2,12 +2,14 @@
 
 Subtitle: how not to write a login screen
 
-To set up: start MySQL server running, then run the following commands in the console to create a passwords database, passwords table, and add some test data.
+To set up: start MySQL server running, then run the following commands in the console to create a users database, grant access to your database user, create a passwords table, and add some test data.
 
 ```
-create database passwords;
+create database users;
 
-use passwords;
+use users;
+
+grant select on users.* to 'yourDBuser'@'localhost';
 
 create table passwords (username varchar(30), login varchar(30), password varchar(30));
 
@@ -29,8 +31,43 @@ login = 'whatever' and password ' or '1'='1
 ```
 Who are you logged in as?
 
-Now, try some of the other attacks from the .NET/SQLServer version of this - they should all work here.
-https://github.com/minneapolis-edu/vb-sql-injection
+In addition to logging in as admin, there's more you can do with SQL injection.
+
+Even though we can gain access to the admin account, we don't actually know the admin's password. With a little trial-and-error, we can discover the password. Try typing `admin` for the username and this for the password
+
+    ' or password like 'a%
+
+Put that into the SQL string, and you are asking to be logged in if our admin's password starts with `a`.
+Now, try this for the password,
+
+      ' or password like 'k%
+
+Success! We now know our admin's password starts with `k`. An attacker can use trial and error to figure out all of the characters in the password.
+
+    ' or password like 'ka%
+    ' or password like 'kb%
+    ' or password like 'kc%
+    ....
+
+It might take a while, but admin access to a server or access to a whole database full of credit card numbers is worth the effort. (And anyone smart enough to use SQL injection is probably smart enough to write a script that will do the hard work for them... or download one of the many SQL injection tools freely available on the internet.)
+
+Maybe we'd like to create a new account for ourselves. Enter any username and this password
+
+    ' ; insert into userdata values ('evil', 'New Evil User', 'password'); select * from userdata where '1'='1
+
+And then you should be able to log in with the username `evil` and password `password`.
+
+The `;` signifies the end of a SQL command, so you can add your own SQL command afterwards. Remember to add a SQL statement at the end that can use the final `'` that your code is adding to the SQL.
+
+And how about simply deleting the whole database? Enter anything for the username and this for the password,
+
+    ' ; drop table userdata  ; select * from userdata where '1'='1
+
+You'll see the Access Denied message, but if you try and log in with a valid account you'll see an error that the database table doesn't exist any more.
+
+This is just the tip of the iceberg of SQL injection. There are many more variations which can be used to discover your database table names, columns, and all of the data within. If you don't filter user input, a malicious user can potentially read all of your data and/or destroy your database. Think about databases of usernanmes and passwords, or credit card data, or names and social security numbers; for example LinkedIn (millions of username and passwords stolen) or the Heartland data breach (millions of credit cards stolen), and many more...
+
+SQL injection hall of shame (Code Curmudgeon): http://codecurmudgeon.com/wp/sql-injection-hall-of-shame/
 
 * Can you create yourself a new account?
 * Can you delete someone else's account?
@@ -39,4 +76,5 @@ https://github.com/minneapolis-edu/vb-sql-injection
 
 Consider this could be a login form on a website that anyone could access. This is a huge problem. 
 
-OK, so how to fix? One very useful preventative measure is parameterized queries. Try replacing the SQL statement at PasswordDatabase:44 with a parameterized query, and then try the evil SQL again. It shouldn't work. This is why you should always user parameterized queries, and doubly always when user input is involved!
+
+OK, so how to fix? One very useful preventative measure is parameterized queries. Try replacing the SQL statement at PasswordDatabase's authenticateUser() method with a parameterized query, and then try the evil SQL again. It shouldn't work. This is why you should always user parameterized queries, and doubly always when user input is involved!

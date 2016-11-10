@@ -7,38 +7,31 @@ public class PasswordManager {
     static PasswordManager manager;
 
     static PasswordDatabase database;
-    static PasswordGUI password;
+    static PasswordUI passwordUI;
 
 
     public static void main(String[] args) {
 
         manager = new PasswordManager();
         database = new PasswordDatabase();
-        try {
-            database.openConnection();
-        } catch (SQLException sqle) {
-            System.out.println("Can't open database connection");
-            sqle.printStackTrace();
-            System.exit(-1);
-        }
-        password = new PasswordGUI(manager);
+        passwordUI = new PasswordUI(manager);
+
     }
 
     public String authenticateUser(String login, String password) {
         try {
-            return database.authenticateUser(login, password);
+
+            String username = database.authenticateUser(login, password);
+            return username;
+
         } catch (SQLException sqle) {
             System.out.println("SQL error in authentication");
             sqle.printStackTrace();
-            return null;
+            return null;                  //todo you'd want to deal with this in a real program
         }
-
-
     }
 
     public void shutdown() {
-        database.closeConnection();
         System.exit(0);
-
     }
 }
