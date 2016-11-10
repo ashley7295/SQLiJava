@@ -52,9 +52,9 @@ Success! We now know our admin's password starts with `k`. An attacker can use t
 
 It might take a while, but admin access to a server or access to a whole database full of credit card numbers is worth the effort. (And anyone smart enough to use SQL injection is probably smart enough to write a script that will do the hard work for them... or download one of the many SQL injection tools freely available on the internet.)
 
-Maybe we'd like to create a new account for ourselves. Enter any username and this password
+Maybe we'd like to create a new account for ourselves. Enter any username, and this password
 
-    ' ; insert into userdata values ('evil', 'New Evil User', 'password'); select * from userdata where '1'='1
+    ' ; insert into passwords values ('evil', 'New Evil User', 'password'); select * from userdata where '1'='1
 
 And then you should be able to log in with the username `evil` and password `password`.
 
@@ -62,7 +62,7 @@ The `;` signifies the end of a SQL command, so you can add your own SQL command 
 
 And how about simply deleting the whole database? Enter anything for the username and this for the password,
 
-    ' ; drop table userdata  ; select * from userdata where '1'='1
+    ' ; drop table passwords  ; select * from passwords where '1'='1
 
 You'll see the Access Denied message, but if you try and log in with a valid account you'll see an error that the database table doesn't exist any more.
 
