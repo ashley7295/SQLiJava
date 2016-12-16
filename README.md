@@ -54,11 +54,15 @@ It might take a while, but admin access to a server or access to a whole databas
 
 Maybe we'd like to create a new account for ourselves. Enter any username, and this password
 
-    ' ; insert into passwords values ('evil', 'New Evil User', 'password'); select * from userdata where '1'='1
+    ' ; insert into passwords values ('evil', 'New Evil User', 'password'); select * from passwords where '1'='1
 
 And then you should be able to log in with the username `evil` and password `password`.
 
 The `;` signifies the end of a SQL command, so you can add your own SQL command afterwards. Remember to add a SQL statement at the end that can use the final `'` that your code is adding to the SQL.
+
+The `select * from passwords where '1'='1` part doesn't do anything related to creating a new user, but it uses up the spare `'` to make the sequence of commands valid. 
+
+Another approach is to write SQL that comments out the last comma.
 
 And how about simply deleting the whole database? Enter anything for the username and this for the password,
 
