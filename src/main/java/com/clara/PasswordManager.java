@@ -18,20 +18,17 @@ public class PasswordManager {
 
     }
 
-    public String authenticateUser(String login, String password) {
-        try {
+    public AuthResult authenticateUser(String login, String password) {
 
-            String username = database.authenticateUser(login, password);
-            return username;
-
-        } catch (SQLException sqle) {
-            System.out.println("SQL error in authentication");
-            sqle.printStackTrace();
-            return null;                  //todo you'd want to deal with this in a real program
+        AuthResult result = database.authenticateUser(login, password);
+        
+        // if error, log error message
+        if (result.error != null) {
+            System.out.println("Error trying to authenticate user:");
+            result.error.printStackTrace();
         }
+        return result;
+        
     }
 
-    public void shutdown() {
-        System.exit(0);
-    }
 }

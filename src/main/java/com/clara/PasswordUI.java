@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class PasswordUI extends JFrame implements WindowListener{
+public class PasswordUI extends JFrame {
 
     private JPanel mainPanel;
 
@@ -19,6 +19,7 @@ public class PasswordUI extends JFrame implements WindowListener{
     private PasswordManager manager;
 
     PasswordUI(PasswordManager m) {
+        
         this.manager = m;
 
         configureComponents();
@@ -26,11 +27,13 @@ public class PasswordUI extends JFrame implements WindowListener{
 
         setContentPane(mainPanel);
         pack();
-        setMinimumSize(new Dimension(400, 200));
+        setMinimumSize(new Dimension(600, 200));
         setVisible(true);
 
         //Make the login button the default button 'clicked' when enter pressed
         rootPane.setDefaultButton(loginButton);
+        
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     }
 
@@ -42,18 +45,25 @@ public class PasswordUI extends JFrame implements WindowListener{
                 //Get data from login and password
                 String login = loginField.getText();
                 String password = passwordField.getText();
+                
                 if (login.length() == 0 || password.length() == 0) {
                     authenticationResultLabel.setText("Please enter username and password");
-                } else {
+                }
+                
+                else {
 
                     //Send username and password to DB for authentication
-                    String userName = manager.authenticateUser(login, password);
-                    if (userName != null) {
-                        //User is authenticated - display welcome message
-                        authenticationResultLabel.setText("Welcome, " + userName);
-                    } else {
-                        //Authentication failure - either username or password or both are wrong
+                    AuthResult result = manager.authenticateUser(login, password);
+                    
+                    if (result.error != null) {
+                        authenticationResultLabel.setText("Error, could not connect to database.");
+                    }
+                    else if (result.username == null) {
+                        //Authentication failure - DB query successful but returned no results - either username or password or both are wrong
                         authenticationResultLabel.setText("Username or password incorrect");
+                    } else {
+                        //User is authenticated - display welcome message.
+                        authenticationResultLabel.setText("Welcome, " + result.username);
                     }
                 }
             }
@@ -89,24 +99,5 @@ public class PasswordUI extends JFrame implements WindowListener{
         mainPanel.add(authenticationResultLabel);
 
     }
-
-    //WindowListener methods. Only want to get an event when window closed, but required to implement all the methods anyway.
-
-    @Override
-    public void windowClosing(WindowEvent e) {
-        manager.shutdown();
-    }
-
-    @Override
-    public void windowOpened(WindowEvent e) {}
-    @Override
-    public void windowClosed(WindowEvent e) {}
-    @Override
-    public void windowIconified(WindowEvent e) {}
-    @Override
-    public void windowDeiconified(WindowEvent e) {}
-    @Override
-    public void windowActivated(WindowEvent e) {}
-    @Override
-    public void windowDeactivated(WindowEvent e) {}
+    
 }
